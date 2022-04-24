@@ -3,7 +3,7 @@
 # This script generates the repository
 #===================================================
 
-SCRIPT_DIR=$(pwd)
+SCRIPT_DIR=${0:a:h}
 
 STAGING_DIR="${SCRIPT_DIR}/staging"
 DEB_REPO_DIR="${SCRIPT_DIR}/dist/deb"
@@ -36,12 +36,12 @@ if [[ -f "${STAGING_DIR}/version" ]] {
 # START Update
 #===================================================
 
-cd $STAGING_DIR
 
 # Get all download links (includes .AppImage)
 DL_LINK_ARRAY=("${(f)"$(jq -r '.assets[] | .browser_download_url' "$STAGING_DIR/latest.json")"}")
 
 for DL_LINK in ${DL_LINK_ARRAY}; {
+    cd $STAGING_DIR
     DL_FILE="${DL_LINK##*/}"
     if [[ "${DL_FILE}" == *.deb ]] {
         wget -nv "${DL_LINK}" || (echo "deb download failed"; exit 1)
