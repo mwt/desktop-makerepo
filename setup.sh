@@ -1,14 +1,14 @@
 #!/bin/sh
 
-sudo apt update && sudo apt install \
+sudo apt update && sudo apt -y install \
 gzip gpg wget zsh \
 jq \
 dpkg apt-utils \
-createrepo-c
+rpm createrepo-c
 
 
 # create downloads folder
-mkdir ./staging
+mkdir -p ./staging
 
 # create folder for apt repo
 mkdir -p ./dist/deb/dists/any/main/binary-amd64/
