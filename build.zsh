@@ -1,6 +1,6 @@
 #!/bin/zsh
 #===================================================
-# This script generates the repository
+# This script generates the repositories
 #===================================================
 
 SCRIPT_DIR=${0:a:h}
@@ -15,31 +15,38 @@ KEYNAME="B7BE5AC2"
 # Get function for creating deb/rpm repos
 . "${SCRIPT_DIR}/functions.zsh"
 
+
+#===================================================
+# Get Info About Latest Release
+#===================================================
+
 # Retreive json file describing latest release
 wget -qO "${STAGING_DIR}/latest.json" "https://api.github.com/repos/shiftkey/desktop/releases/latest" || (echo "json download failed"; exit 1)
 
 # Get the new ID
 LATEST_ID=$(jq -r '.id' "${STAGING_DIR}/latest.json")
 
+# Only continue if the latest release ID is different from the ID in staging/version
 if [[ -f "${STAGING_DIR}/version" ]] {
-    if [[ ${LATEST_ID} == $(<$STAGING_DIR/version) ]] {
+    if [[ "${LATEST_ID}" == $(<"${STAGING_DIR}/version") ]] {
         echo "Already latest version"
         exit 0
     } else {
-        echo "Updating to version ${LATEST_ID}"
+        echo "Adding version ${LATEST_ID}"
     }
 } else {
     echo "Adding version ${LATEST_ID}. No prior version found."
 }
 
+
 #===================================================
 # START Update
 #===================================================
 
-
 # Get all download links (includes .AppImage)
 DL_LINK_ARRAY=("${(f)"$(jq -r '.assets[] | .browser_download_url' "$STAGING_DIR/latest.json")"}")
 
+# Loop over download links, download files, and make repos (using functions in functions.zsh)
 for DL_LINK in ${DL_LINK_ARRAY}; {
     cd $STAGING_DIR
     DL_FILE="${DL_LINK##*/}"

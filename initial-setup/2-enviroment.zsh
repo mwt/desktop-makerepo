@@ -20,4 +20,4 @@ zcompile ./functions.zsh
 # undo cd
 cd -
 
-echo "install gpg key manually"
+echo "Install gpg key yourself"
