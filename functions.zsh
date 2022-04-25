@@ -18,18 +18,21 @@ update_deb_repo() {
     # MAKE REPO
     #===================================================
     
-    cd $DEB_REPO_DIR
+    cd "${DEB_REPO_DIR}"
     # Make package file for all packages
     apt-ftparchive --arch amd64 packages ./pool/ | tee ./dists/any/main/binary-amd64/Packages | gzip > ./dists/any/main/binary-amd64/Packages.gz
     # Make Release file for all
     apt-ftparchive --arch amd64 release -c "${FTPARCHIVE_CONF}" ./dists/any/ > ./dists/any/Release
+    cd -
     
-    cd ./dists/any/
+    DISTS_ANY="${DEB_REPO_DIR}/dists/any"
     # generate Release.gpg
-    rm -fr Release.gpg; gpg --default-key "${KEYNAME}" -abs -o Release.gpg Release
+    rm -fr "${DISTS_ANY}/Release.gpg"
+    gpg --default-key "${KEYNAME}" -abs -o "${DISTS_ANY}/Release.gpg" "${DISTS_ANY}/Release"
     
     # generate InRelease
-    rm -fr InRelease; gpg --default-key "${KEYNAME}" --clearsign -o InRelease Release
+    rm -fr "${DISTS_ANY}/InRelease"
+    gpg --default-key "${KEYNAME}" --clearsign -o "${DISTS_ANY}/InRelease" "${DISTS_ANY}/Release"
 }
 
 #===================================================
@@ -47,6 +50,8 @@ update_rpm_repo() {
     cp "${RPM_FILE}" "${RPM_REPO_DIR}/${RPM_FULLNAME}.rpm"
 
     # remove and replace repodata
-    rm -fr "${RPM_REPO_DIR}/repodata"; createrepo_c ${RPM_REPO_DIR}
-    rm -f "${RPM_REPO_DIR}/repodata/repomd.xml.asc"; gpg --default-key "${KEYNAME}" -abs -o "${RPM_REPO_DIR}/repodata/repomd.xml.asc" "${RPM_REPO_DIR}/repodata/repomd.xml"
+    createrepo_c --update ${RPM_REPO_DIR}
+
+    rm -f "${RPM_REPO_DIR}/repodata/repomd.xml.asc"
+    gpg --default-key "${KEYNAME}" -abs -o "${RPM_REPO_DIR}/repodata/repomd.xml.asc" "${RPM_REPO_DIR}/repodata/repomd.xml"
 }
