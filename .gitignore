@@ -1,3 +1,4 @@
 /staging/
 /dist/
 *.log
+*.zwc

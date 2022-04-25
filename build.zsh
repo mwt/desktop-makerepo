@@ -13,7 +13,7 @@ RPM_REPO_DIR="${SCRIPT_DIR}/dist/rpm"
 KEYNAME="B7BE5AC2"
 
 # Get function for creating deb/rpm repos
-source "${SCRIPT_DIR}/functions.zsh"
+. "${SCRIPT_DIR}/functions.zsh"
 
 # Retreive json file describing latest release
 wget -qO "${STAGING_DIR}/latest.json" "https://api.github.com/repos/shiftkey/desktop/releases/latest" || (echo "json download failed"; exit 1)
