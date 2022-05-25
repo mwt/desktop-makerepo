@@ -1,0 +1,8 @@
+Origin: mirror.mwt.me
+Label: Desktop
+Codename: any
+Architectures: amd64
+Components: main
+Description: Fork of GitHub Desktop to support various Linux distributions
+SignWith: B7BE5AC2
+Limit: 20

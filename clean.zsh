@@ -5,6 +5,8 @@
 
 SCRIPT_DIR=${0:a:h}
 
+cd "${SCRIPT_DIR}"
+
 # delete every file that is not tracked by the repo
 git clean -dfx
 
